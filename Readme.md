@@ -14,3 +14,29 @@
 
 ## 데이터 모델링 도구
 = `https://draw.io` 또는 `https://app.diagrams.net/`
+
+## 개념적 데이터 모델링
+- 현실세계의 데이터를 정보처리를 하기위해 추상화 단계를 거치는데, 꼭 필요한 항목만 추출하여 정리하는 단계
+- 현실세계의 중요 데이터 항목을 추출하여 데이터베이스의 
+`개념적 세계`로 옮기는 작업
+- 개념적 세계 : 정보처리를 하기위한 준비 단계
+- 이때 모델링된 정보를 Diagram 으로 옮기는데 이 Diagram 을 
+`ER(Entity Relationship Diagram` 라고 한다.
+
+### Entity(객체, 개체)
+- ERD 에서 사각형으로 표현 된다.
+- 사각형 틀안에 개체의 이름을 표기한다.
+
+### Attribute(type, 속성)
+- 개체(Entity)가 가지고 있는 고유한 단일특성
+- 의미 있는 가장 작은 논리적 단위
+- (엑셀데이터) 표의 각 항목을 의미한다
+- 타원을 그리고 타원 안에 속성의 이름을 표기한다.
+
+### Entity- Attribute 연결선
+- 화살표를 사용하여 Entity 에서 Attribute 방향으로 직선으로연결한다.
+
+### Relation ship
+- Entity 와 Entity 가 서로 연결되어 다른 정보를 만들어 내는것
+- RDBMS 에서는 여러개의 Entity 가 존재하고, Entity 와 Entity 가 연결된 여러개의 Relation 이 존재한다.
+- Relation 에는 연관 Entity 의 key 항목이 자동으로 포함된 것으로 본다.
