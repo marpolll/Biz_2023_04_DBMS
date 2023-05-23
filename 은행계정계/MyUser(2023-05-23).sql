@@ -18,9 +18,9 @@ SELECT * FROM tbl_buyer;
 -- tbl_buyer 테이블에 저장된 데이터를 아무 조건 없이 보이되
 -- buid, buname 칼럼 만 보여달라
 -- 저장된 데이터 중에서 id와 이름 항목만 보고 싶다.
-SELECT buid,buname FROM tbl_buyer;
+SELECT buid,biname FROM tbl_buyer;
 
-SELECT buname, butel FROM tbl_buyer;
+SELECT biname, butel FROM tbl_buyer;
 
 -- 테이블에 저장된 데이터 중에서 이름항목의 데이터가
 -- 성춘향으로 되어있는 데이터들만 리스트로 보고싶다.
@@ -115,7 +115,164 @@ Java 의 데이터 클래스가 여기에 해당한다.
 
 SELECT * FROM tbl_buyer;
 
+-- 매우 위험한 코드
+-- 업데이트나 델리트를 수행할때는 PK가 아닌 칼럼을 기준으로 하지마라
+-- 만약 PK 가 아닌 칼럼을 기준으로 할때는 매우 신중하게 수행을 해야한다
+UPDATE tbl_buyer
+SET butel = '010-333-3333'
+WHERE biname = '성춘향';
 
+/*
+tbl_buyer 테이블에 성춘향 중에서 전화번호가 없는 데이터가 있다.
+전화번호가 없는 성춘향 데이터의 전화번호를 010-333-3333 으로 변경하고자 한다.
 
+1. 이름 칼럼에 데이터가 성춘향 인 리스트를 조회를 한다.
+2. 전화번호가 없는(null) 데이터에 아이디 값을 확인한다. : 0003을 알수 있다.
+3. 아이디을 기준으로 업데이트를 실시한다.
+
+*/
+SELECT * FROM tbl_buyer WHERE biname = '성춘향';
+
+UPDATE tbl_buyer
+SET butel = '010-333-3333'
+WHERE buid = '0003';
+
+/*
+1. 전체 고객 데이터를 조회
+2. 이몽룡의 주소가 현재 서울특별시 이다.
+   그런데 이몽룡이 전북 익산으로 이사 했다.
+3. 이몽룡의 주소를 서울에서 익산으로 변경 하고자 한다.
+*/
+
+SELECT * FROM tbl_buyer WHERE biname = '이몽룡';
+
+UPDATE tbl_buyer
+SET buaddr = '전북 익산'
+WHERE buid = '0001';
+
+SELECT * FROM tbl_buyer;
+
+SELECT * FROM tbl_buyer;
+
+-- PK 인 아이디 값이 0004 인 데이터 삭제하기
+-- 불필요한 데이터 삭제하기
+DELETE FROM tbl_buyer
+WHERE buid = '0004';
+/*
+ 데이터 추가
+ 칼럼목록 개수, 순서 >> 데이터 목록 개수, 순서 일치해야 한다.
+ INSERT INTO 테이블(칼럼목록)
+ VALUES(데이터 목록);
+
+ 데이터 조회
+ SELECT * FROM 테이블;
+ WHERE 칼럼 = '값'
+
+데이터 수정
+ UPDATE 테이블
+ SET 칼럼 = '값'
+ WHERE 칼럼 = '값';
+
+데이터 삭제
+DELETE FROM 테이블
+WHERE 칼럼 = '값';
+*/
+
+-- 계좌정보
+CREATE TABLE tbl_acc (
+	acNum	VARCHAR2(10)    PRIMARY KEY,
+    acDate	VARCHAR2(1)	    NOT NULL,	
+    acBuId	VARCHAR2(5)	    NOT NULL,	
+    acBalance	NUMBER	    DEFAULT 0	
+);
+
+-- 각 고객의 계좌정보 생성하기
+INSERT INTO tbl_acc(acNum,acDate,acBuId,acBalance)
+VALUES('2023052301', 1 , '0003' , 10000);
+
+INSERT INTO tbl_acc(acNum,acDate,acBuId,acBalance)
+VALUES('2023052302', 2 , '0001' , 50000);
+
+INSERT INTO tbl_acc(acNum,acDate,acBuId,acBalance)
+VALUES('2023052303', 3 , '0002' , 10000);
+
+SELECT * FROM tbl_acc;
+
+/*
+계좌정보를 조회 했는데 
+고객정보가 고객 아이디 뿐이여서 고객에 대한 이름,전화번호 등을 알수가 없다.
+고객정보와 계좌정보를 연동하여 함께 볼수 있다면 좋겠다. 
+
+TABLE JOIN
+2개이상의 테이블을 서로 연계하여 하나의 리스트로 보기
+
+acc 와 buyer 테이블을 연계하여 하나의 리스트로 보여라
+이떄 acc 의 아이디와 바이어의 아이디 칼럼의 데이터를 비교하여
+같은 데이터는 한 라인에 보여라
+*/
+SELECT * FROM tbl_acc , tbl_buyer
+WHERE acbuid = buid;
+
+-- 조인을 하되 4개의 칼럼만 화면에 나타나도록 하고 싶다.
+SELECT acnum, acbuid, biname, butel 
+FROM tbl_acc , tbl_buyer
+WHERE acbuid = buid;
+
+SELECT * FROM tbl_buyer;
+
+-- SELECT 조회를 할때 *를 사용하지 않고 칼럼을 나열하는법
+-- 이름순으로 정렬하고 이름이 같으면 전화번호 순으로 정렬하라
+SELECT buid,biname,butel,buaddr,bubirth,bujob
+FROM tbl_buyer
+ORDER BY biname, butel;
+
+-- 아이디순 으로 정렬하라
+SELECT buid,biname,butel,buaddr,bubirth,bujob
+FROM tbl_buyer
+ORDER BY buid;
+
+INSERT INTO tbl_buyer(buid, biname, butel)
+VALUES ('0004','임꺽정','010-444-4444');
+
+/* 
+SQL 와 java 코드에서 DB 를 서로 연동하여 처이하는 경우 발생하는 문제
+ 에서 데이터를 인설트 업데이트 델리트 를 수행하는 경우
+ 추가,수정,삭제된 정보는 아직 stroge 에 반영되지 않고, 메모리에 잠시
+ 보관(저장)된 상태이다
+ 이 상태일때 java에서 SELECT 를 수행하려면 인 업 델리트 한 데이터가
+ 아닌 이전 상태의 데이터가 조회된다.
+ 간혹 이 상황에서 
+ 
+ 그러니까 COMMIT 해주면 연결이 되어 java 프로젝트에서
+ 조회할수 있다.
+*/
+COMMIT;
+
+INSERT INTO tbl_buyer(buid, biname)
+VALUES ('0005','장길산');
+
+SELECT * FROM tbl_buyer;
+
+-- 커밋이 되기 전의 데이터를 취소하는 명령
+-- 내가 잘못 지워서 롤백 할수 있지만 다른사람들이 해놓은것들도 다 롤백 될수있다.
+-- 은행 컨트랙션 안에서 커밋과 롤백이 이루어진다.
+ROLLBACK;
+
+-- PK 칼럼을 기준으로 조건을 설정하여 조회하기
+--                    조회를 하면 데이터가 없거나 1개만 조회한다.
+SELECT buid,biname,butel,buaddr,bubirth,bujob
+FROM tbl_buyer
+WHERE buid = '0001';
+
+INSERT INTO tbl_buyer(buid, biname, butel)
+VALUES ('0001','이','010-1111');
+
+UPDATE tbl_buyer
+SET biname = '',
+    butel = '',
+    buaddr = ''.
+    bubirth = '',
+    bujob = '',
+WHERE buid
 
 
