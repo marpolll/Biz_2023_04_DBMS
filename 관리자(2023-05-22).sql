@@ -1,56 +1,58 @@
--- 커멘트
-/* 커멘트 */
--- 여기는 관리자 화면으로 로그인한 상태
--- C:/app/data
-
--- 기본 키워드(명령명) 대문자
--- 변수명, 사용자정의 이름 소문자
-
--- 1. 데이터 저장소(TABLESPACE(ORALCE에서)) 생성
-CREATE TABLESPACE myDB
-DATAFILE 'C:/app/data/mydb.dbf'
-SIZE 1M AUTOEXTEND ON NEXT 1k;
-
--- 삭제, 제거 : DELETE, DROP
--- DELETE : 데이터의 일부 요소를 삭제, 데이터 구조 등은 변화가 없다.
--- DROP : 물리적인 데이터 요소를 제거하기, 데이터 구조 제거, 많은 데이터를 한꺼번에 제거
---        데이터 파괴자 명령, 매우 신중하게 주의하면서 사용해야 한다.
--- DROP TABLESPACE myDB
--- INCLUDING CONTENTS AND DATAFILES;
-
--- 21c 에서 일부 권한이 필요한 스크립트 실행가능하도록 설정하기
-ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE;
-
--- 2. DB 에 연결하여 실습(사용)할 일반 사용자 계정을 생성하기
-CREATE USER C##myuser IDENTIFIED BY 12341234
-DEFAULT TABLESPACE myDB;
-
--- 3. 생성상 사용자 계정에 권한(ROLE)부여하기
-
--- login 할수 있는 권한 부여
-GRANT CREATE SESSION to C##myuser;
-REVOKE CREATE SESSION FROM C##myuser;
 
 
--- table 를 생성할수 있는 권한 부여
-GRANT CREATE TABLE to C##myuser;
-REVOKE CREATE TABLE FROM C##myuser;
+-- 관리자로 로그인 한 화면
+-- 관리자는 sysDBA 권한을 가진 사용자
+-- sysDBA 사용자는 데이터베이스 시스템을 생성, 제거, 파괴 할수 있는 권한가진 사용자
 
--- 실습의 편리성을 위해여 SYSDBA 한단계 낮은 일반 DBA 권한을 부여
--- 오라클에서는 SYSDBA(SYSTEM 등)의 USER 권한은 매우 조심해서 신중하게 다루어야 한다.
--- DB 사용의 편의성을 위하여 오라클 에서는 DBA 권한을 일반 사용자에게 부여할수 있도록 하고있다.
+-- 오라클에서는 관리자로 로그인하여 수행할 작업
+-- 테이블스페이스 생성, 유저 생성
+-- 테이블스페이스는 : 데이터를 저장할 물리적 저장소(파일), 데이터를 저장하기 위해서 
+--        가장 먼저 생성해야할 객체
+-- 유저 : DBMS 서버에 로그인을 하고 , 자신이 관리할 데이터들과 연결하는 객체
+--        오라클에서 유저는 데이터 자장소의 개념이다. 이개념은 다른 DBMS 와는
+--        약간 다르게 취급한다.
+--        저장소 스키마 라고 표현한다.
 
--- 이 권한은 실무(실제환경)에서는 절대 사용하면 안된다.
--- 시스템의 중요한 데이터 사전을 제외한 모든 데이터를 
--- 핸들링(추가, 수정, 삭제, 제거 등) 을 할수 있는 권한이다.
--- 다만 실습 환경에서만 사용하자
-GRANT DBA to C##myuser;
+-- C:/app/data : 테이블스페이스가 저장될 폴더
+
+-- 1. 테이블스페이스 생성(CREATE 키워드)
+-- student 테이블 스페이스를 생서하고 저장소는
+-- student.dbf 로 해라
+-- 초기 용량은 1메가 그후 자동으로 1키로로 증가하게 설정
+CREATE TABLESPACE shopping -- 저장소 이름을 student 라는 이름으로 사용하겠다.
+DATAFILE 'C:/app/data/shopping.dbf' -- 저장소 폴더에 student.dbf 라는 이름으로 생성
+SIZE 1M AUTOEXTEND ON NEXT 1K; -- 초기에 저장소 공간을 1메가 확보하고 
+                               -- 혹시 부족하면 1키로 바이트식 자동 증가
 
 
+-- 2. 사용자 생성
+-- student 라는 사용자를 생성하고 비번을 12341234로 설정하고
+-- 기본 저장소 연결을 student 로 설정하라
 
-SHOW USER;
+-- 오라클 12c 이후 버전에서는 사용자 이름 등록하는 정책이 변경되었다.
+-- 만약 student 라는 사용자를 생성하고 싶으면 C##student 라는 이름으로 생성을 해야한다.
+-- 이러한 정책은 보안적인 면에서 권장하지만 때로는 불편할때가 있다.
+-- 일부 프로그래밍 언어에서 DB 에 접속할때 ## 와 같은 특수문자가 있으면
+-- 접속에 문제를 일으키는 경우가 있다.
+-- 오라클에서는 12c 이후에 사용자 생성 정책을 예전 정책으로 사용할수 있도록 하는
+-- 설정을 제공한다.
 
--- DROP USER C##myuser CASCADE;
+-- 이 설정 명령은 유저를 생성하기 전에 항상 실행 해 주어야 한다.
+ALTER SESSION SET "_ORACLE_SCRIPT" = true;
+
+CREATE USER shopping IDENTIFIED BY 12341234
+DEFAULT TABLESPACE shopping;
 
 
+-- 3. 생성할 사용자에게 권한을 부여
+-- 사용자(student)는 DBMS 소프트웨어에 로그인을 하고
+--      SQL 를 사용하여 데이터 테이블을 생성하고 
+--      CRUD 명령을 수행하여 테이터를 관리한다.
+-- 오라클에서 사용자를 생성(CREATE) 한 직후에는 아무런 권한이 없다
+--      심지어 DBMS 소프트웨어에 로그인 할수도 없다.
+-- 사용자에게 권한을 부여하여 기능을 활성화 시켜줘야 한다.
+-- 원칙적으로 권한부여는 각각 항목별로 세부적으로 부여해야 하지만
+-- 학습적 편리성을 위하여 모든 권한을 한번에 부여 될 것이다.
 
+-- student 사용자에게 DBA(데이터 관리자) 권한을 부여하라
+GRANT DBA TO shopping;
