@@ -1,18 +1,52 @@
 
+DROP TABLE calendar;
+
 CREATE TABLE calendar (
 	content	VARCHAR2(200)	NOT NULL,
 	start_date   DATE,
 	end_date	 DATE
 );
 
+CREATE TABLE calendar (
+    seq NUMBER PRIMARY KEY,
+	events JSON
+);
+
+insert into calendar(seq, events) values(4, '{ title : "책읽기", start : "2023-07-20", end : "2023-07-30" }');
+insert into calendar(seq, events) values(5, '{ "title" : "조깅하기", "start" : "2023-07-06 00:00:00", "end": "2023-07-15 00:00:00" }');
+insert into calendar(seq, events) values(3, '[35, "man", "인사"]');
+
 SELECT * FROM calendar;
 
+commit;
+
+DROP TABLE employees;
+CREATE TABLE employees (
+	id NUMBER  primary key,
+	name VARCHAR(200),
+	profile JSON
+);
+
+insert into employees(id, name, profile) values(0001, '홍길동', '{ "age" : 30, "gender" : "man", "부서": "개발" }');
+insert into employees(id, name, profile) values(0002, '김갑수', '[35, "man", "인사"]');
+insert into employees(id, name, profile) values(0003, '신상일', json_object(
+    'age', 28, 
+    'gender', 'man', 
+    '부서', '연구'
+));
+
+
+
+SELECT * FROM employees;
 
 INSERT INTO calendar(content, start_date, end_date)
 VALUES('물마시기', '20230714', '20230730');
 
 INSERT INTO calendar(content, start_date, end_date)
 VALUES('책읽기', '20230723', '20230725');
+
+INSERT INTO calendar(content, start_date, end_date)
+VALUES('책읽기', '20230723 000000', '20230725 240000');
 
 DROP TABLE calendar;
 
