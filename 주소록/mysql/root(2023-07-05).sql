@@ -100,4 +100,9 @@ insert into calendar(events) values('"events" : { "title" : "책읽기", "start"
 insert into calendar(events) values('["조깅하기", "2023-07-16 00:00:00", "2023-07-28 00:00:00"]');
 insert into calendar(events) values('{ "title" : "책읽기"}');
 
+CREATE TABLE 
+
+
 SELECT * FROM calendar;
+
+
