@@ -37,7 +37,7 @@ identified BY '88888888';
  무결성 파괴
  만약 이 사용자가 자신의 id 와 비번을 소홀히 하여
  누군가에게 노출된다면, 이 id 와 비번을 통하여
- DB 에 접근하고 DBMS 데이터를 모두 파괴 할수 있다.
+ DB 에 접근하고 DBMS 데이터를 모두 파calendarcalendar괴 할수 있다.
 */
 CREATE USER 'todo'@'%'
 identified BY '88888888';  
@@ -67,7 +67,22 @@ DROP USER 'todo'@'localhost';
 FLUSH privileges;
 
  
- 
+commit;
+
+DROP TABLE calendar;
+
+CREATE TABLE calendar (
+	id integer  AUTO_INCREMENT primary key,
+	events JSON
+);
+
+insert into calendar(title) values('"책읽기"');
+insert into calendar(events) values('"events" : { "title" : "책읽기", "start" : "2023-07-16 00:00:00", "end": "2023-07-28 00:00:00" }');
+insert into calendar(events) values('["조깅하기", "2023-07-16 00:00:00", "2023-07-28 00:00:00"]');
+insert into calendar(events) values('{ "title" : "책읽기"}');
+insert into calendar(id, events) values(2, '["책읽기", "2023-07-16", "2023-07-28"]');
+
+SELECT * FROM calendar;
  
  
  
