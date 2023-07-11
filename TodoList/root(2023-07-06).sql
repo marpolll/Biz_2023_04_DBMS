@@ -61,7 +61,10 @@ GRANT ALL privileges ON todoDB.* TO 'todo'@'192.168.4.%';
 -- 접근하는 권한 부여
 GRANT ALL privileges ON todoDB.tbl_todolist TO 'todo'@'192.168.4.%';
 
+GRANT CREATE, SELECT, INSERT, UPDATE, DELETE ON todoDB.* TO 'todo'@'192.168.4.%';
 
+DROP USER 'todo'@'localhost';
+FLUSH privileges;
 
  
  
