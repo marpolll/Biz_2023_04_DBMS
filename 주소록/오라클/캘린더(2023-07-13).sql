@@ -20,8 +20,12 @@ insert into obj(c_id, events) values(0003,'{ "title" : "런닝하기", "start" :
 insert into obj(c_id, events) values(0004,'{ "title" : "잠자기", "start" : "2023-07-11", "end": "2023-07-15" }');
 insert into obj(c_id, events) values(0005,'{ "title" : "휴대폰하기", "start" : "2023-07-20", "end": "2023-07-25" }');
 
+insert into calendar VALUES(0005,'{ "title" : "휴대폰하기", "start" : "2023-07-20", "end": "2023-07-25" }'); 
+
+
+
 select c_id, json_extract(events, '$."title"')
- from calendar where json_extract(profile, '$."title"') = '물마시기'; 
+ from calendar where json_extract(events, '$."title"') = '물마시기'; 
 
 
 insert into title(title) values('{ "title" : "물마시기"}');
