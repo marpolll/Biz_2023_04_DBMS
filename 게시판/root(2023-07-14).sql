@@ -49,3 +49,25 @@ create table tbl_images (
 	i_uploadname	varchar(255)			
 );
 
+insert into tbl_bbs(b_username)
+values('marpol');
+
+-- AUTO_INCREMENT 로 설정된 칼럼의 가장
+-- 마지막 INSERT 된 데이터 가져오기
+select LAST_INSERT_ID();	
+
+insert into tbl_bbs(b_username)
+values('marpol1'),
+('marpol2'),
+('marpol3'),
+('marpol4'),
+('marpol5');
+
+select * from tbl_bbs;
+
+select * from tbl_images;
+
+truncate tbl_bbs;
+truncate tbl_images;
+
+commit;
